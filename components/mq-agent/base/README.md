@@ -27,12 +27,7 @@ oc create secret docker-registry ibm-entitlement-key \
 
 #### 2. TLS secret for MQ Console ↔ Agent communication
 
-```bash
-oc create secret tls mq-agent-tls \
-  --cert=tls.crt \
-  --key=tls.key \
-  --namespace=cp4i
-```
+This is handled automatically by cert-manager via [`tls-certificate.yaml`](tls-certificate.yaml), which is applied by the `mq-agent-config` ArgoCD Application. The cert-manager `Certificate` resource creates the `mq-agent-tls` Secret in `cp4i` using the existing `mq-selfsigned-issuer`. No manual step required.
 
 ### Deploying the Helm chart with secrets
 

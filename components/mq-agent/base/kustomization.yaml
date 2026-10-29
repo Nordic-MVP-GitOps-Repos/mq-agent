@@ -3,3 +3,4 @@ kind: Kustomization
 
 resources:
   - ccdt-configmap.yaml
+  - tls-certificate.yaml

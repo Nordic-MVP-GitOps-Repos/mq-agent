@@ -1,0 +1,29 @@
+# TLS certificate for MQ Console <-> MQ Agent HTTPS communication.
+# cert-manager creates the Secret 'mq-agent-tls' automatically.
+# Reference: https://www.ibm.com/docs/en/ibm-mq/9.4.x?topic=cluster-mq-agent-helm-chart-values
+#   agent.tlsSecretName = mq-agent-tls (default, matches overrides.yaml)
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mq-agent-tls
+spec:
+  secretName: mq-agent-tls
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  commonName: "mq-agent"
+  subject:
+    organizations:
+      - 'mqss'
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - key encipherment
+    - digital signature
+    - server auth
+  dnsNames:
+    - '*.cp4i.svc'
+    - '*.cp4i.svc.cluster.local'
+  issuerRef:
+    name: mq-selfsigned-issuer
