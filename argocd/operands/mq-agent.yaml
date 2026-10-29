@@ -1,0 +1,54 @@
+# Deploys the CCDT ConfigMap that the MQ Agent MCP server uses to connect to the queue manager.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mq-agent-config
+  namespace: openshift-gitops
+  labels:
+    group: applications
+  annotations:
+    argocd.argoproj.io/sync-wave: "350"
+spec:
+  destination:
+    namespace: cp4i
+    server: https://kubernetes.default.svc
+  project: cp4i-operands
+  source:
+    repoURL: https://github.com/Nordic-MVP-GitOps-Repos/mq-agent.git
+    path: components/mq-agent/base
+  syncPolicy:
+    automated:
+      selfHeal: true
+---
+# Deploys the MQ Agent via the IBM Helm chart.
+# Sensitive values (watsonx projectID and key) are supplied at helm install time
+# via a local overrides-secrets.yaml — see components/mq-agent/base/README.md.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mq-agent
+  namespace: openshift-gitops
+  labels:
+    group: applications
+  annotations:
+    argocd.argoproj.io/sync-wave: "400"
+spec:
+  destination:
+    namespace: cp4i
+    server: https://kubernetes.default.svc
+  project: cp4i-operands
+  sources:
+    # Helm chart from the IBM Helm registry
+    - repoURL: https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
+      chart: ibm-mq-agent
+      targetRevision: 3.1.0
+      helm:
+        valueFiles:
+          # Non-secret overrides stored in git
+          - $values/components/mq-agent/base/overrides.yaml
+    # Git repo used as the source for value files ($values ref)
+    - repoURL: https://github.com/Nordic-MVP-GitOps-Repos/mq-agent.git
+      ref: values
+  syncPolicy:
+    automated:
+      selfHeal: true

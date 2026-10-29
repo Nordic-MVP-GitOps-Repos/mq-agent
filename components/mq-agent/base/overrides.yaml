@@ -1,0 +1,39 @@
+# IBM MQ Agent Helm chart overrides
+# Reference: https://www.ibm.com/docs/en/ibm-mq/9.4.x?topic=cluster-mq-agent-helm-chart-values
+#
+# Sensitive values (watsonx projectID and API key) are NOT stored here.
+# Supply them at deploy time via overrides-secrets.yaml (see README.md).
+
+license:
+  accept: true
+  # L-JVBD-R9HX59 = IBM MQ Advanced 9.4
+  # L-SJZL-NMUUCT = IBM Cloud Pak for Integration 16.1.3 (matches QM nonprod license)
+  license: L-SJZL-NMUUCT
+
+metadata:
+  annotations:
+    productID: "208423bb063c43288328b1d788745b0c"
+    productName: "IBM MQ Advanced"
+    productMetric: "PROCESSOR_VALUE_UNIT"
+    productChargedContainers: "All"
+
+agent:
+  tlsSecretName: mq-agent-tls
+  model:
+    providers:
+      myWatsonxRuntime:
+        watsonxService:
+          # projectID and key are supplied via overrides-secrets.yaml — never committed to git
+
+mcpServer:
+  ccdtConfigMapName: mq-agent-ccdt
+  # Uncomment if your QM channel requires a TLS client certificate:
+  # keyStoreSecretName: agent-qm-keystore
+  # keyStorePassword: ""
+  # Uncomment if your QM channel requires username/password authentication:
+  # configurationSecretName: mq-agent-credentials
+
+imagePullSecrets: ibm-entitlement-key
+
+route:
+  enabled: true

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mq-agent-ccdt
+data:
+  ccdt.json: |
+    {
+      "channel": [
+        {
+          "name": "HAQMCHL",
+          "clientConnection": {
+            "connection": [
+              {
+                "host": "native-ha-qm-ibm-mq.cp4i.svc.cluster.local",
+                "port": 1414
+              }
+            ],
+            "queueManager": "NATIVEHAQM"
+          },
+          "transmissionSecurity": {
+            "cipherSpecification": "ANY_TLS12_OR_HIGHER"
+          },
+          "type": "clientConnection"
+        }
+      ]
+    }
