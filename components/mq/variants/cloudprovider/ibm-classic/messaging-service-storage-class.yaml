@@ -1,8 +1,0 @@
-kind: MessagingServer
-apiVersion: integration.ibm.com/v1beta1
-metadata:
-  name: sample-messagingserver
-spec:
-  queueManager:
-    storage:
-      defaultClass: ibmc-block-gold

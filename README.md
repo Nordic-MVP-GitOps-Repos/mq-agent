@@ -1,17 +1,25 @@
 ## Introduction
 
+This repo installs IBM MQ on OpenShift (OpenShift Virtualization on IBM Cloud / VPC infrastructure) using OpenShift GitOps (ArgoCD) and Kustomize. IBM Cloud Pak for Integration Platform Navigator is included for managing MQ. CP4I documentation: https://www.ibm.com/docs/en/cloud-paks/cp-integration
 
-This repo can be used to install IBM Cloud Pak 4 Integration capabilities and sample applications. CP4I documentation: https://www.ibm.com/docs/en/cloud-paks/cp-integration
+## Repository structure
 
-## Repository Structure
-
-![Repository structure](./media/CP4I-GitOps-Repo-Setup.png)
+- `argocd/` - bootstrap ArgoCD application, projects, RBAC and the operator/operand ApplicationSets
+- `components/mq` - MQ operator subscription, queue manager manifests and the IBM VPC / nonprod variants
+- `components/platformnavigator` - Platform Navigator operator and instance
+- `components/common` - IBM operator catalog source, namespace and operator group
+- `components/openshift-cert-manager`, `components/cert-utils` - certificate tooling used by the queue manager TLS setup
+- `components/reloader`, `components/openshift-monitoring` - Stakater Reloader (restarts queue managers on config/cert change) and user workload monitoring (MQ metrics)
+- `envs/ibm-vpc/nonprod` - the environment that the ApplicationSets deploy
+- `examples/mq/clients` - sample MQ Java clients
 
 ## Instructions
 
-You should have an existing OpenShift cluster available. 
+You should have an existing OpenShift cluster available.
 
 Make sure that the default storage class is block storage, verify that you have a storage class with the "default" annotation: ```storageclass.kubernetes.io/is-default-class: 'true'```
+
+The MQ storage class is set in [storage-class.yaml](components/mq/variants/cloudprovider/ibm-vpc/storage-class.yaml) (`ibmc-vpc-block-10iops-tier`). Change it if you use a different storage class, for example one backed by OpenShift Virtualization.
 
 ### Fork this repo and adapt it for your environment
 
@@ -20,10 +28,10 @@ First, fork this repo. Now update the following files that refer to your repo ur
 - [kustomization.yaml](./argocd/kustomization.yaml)
 - [bootstrap.yaml](./argocd/bootstrap.yaml)
 
-Now chose which operators, operands and type of environment:
+Then check which operators and operands are selected:
 
-- [all-operators](argocd/operators/all-operators.yaml) By default, CP4I operators are installed into the 'cp4i' namespace. If you want to change this, you can update the setting per operator. 
-- [all-operands.yaml](argocd/operands/all-operands.yaml) Here, select which capabilities you want to install. Also update with your environment, using ODF storage (odf), IBM Classic infrastructure (ibm-classic), IBM VPC infrastructure (ibm-vpc), Azure (azure or azure-nfs) and AWS (aws) are valid values
+- [all-operators](argocd/operators/all-operators.yaml) By default, operators are installed into the 'cp4i' namespace. If you want to change this, you can update the setting per operator.
+- [all-operands.yaml](argocd/operands/all-operands.yaml) Selects which capabilities are installed (Platform Navigator, MQ, OpenShift Monitoring, Reloader).
 
 ### Install the OpenShift GitOps operator
 
@@ -41,33 +49,24 @@ The "common" application creates a namespace (cp4i by default) and a catalogsour
 
 The all-operators.yaml ApplicationSet generates ArgoCD applications for your selected operators based on a simple naming convention, pointing into the components subdirectory where Subscriptions for each operator can be found.
 
-After applying the bootstrap file, the operators will be installed. By default, these are installed in the cp4i namespace. You can check the status in the OpenShift Console under Operators / Installed Operators.
+After applying the bootstrap file, the operators will be installed. You can check the status in the OpenShift Console under Operators / Installed Operators.
 
 ### Add the IBM entitlement key to access the container registry
 
 Create an image pull secret in the 'cp4i' namespace with the name ibm-entitlement-key, address cp.icr.io, username cp and your entitlement key as password.
 
-### Install operands / capabilities
+### Install operands
 
 Now, uncomment the line referring to 'operands/all-operands.yaml' in [kustomization.yaml](./argocd/kustomization.yaml)
 
-The [all-operands.yaml](argocd/operands/all-operands.yaml) ApplicationSet generates ArgoCD applications for your selected capabilities. If you didn't change anything, only Platform Navigator is installed from the CloudPak, together with OpenShift Logging, OpenShift Monitoring and Stakater Reloader.
+The [all-operands.yaml](argocd/operands/all-operands.yaml) ApplicationSet generates ArgoCD applications for Platform Navigator, MQ, OpenShift Monitoring and Stakater Reloader, using [envs/ibm-vpc/nonprod](envs/ibm-vpc/nonprod).
 
-If you have enabled the webhook earlier, ArgoCD will refresh and trigger install of the capabilities. If you didn't, open ArgoCD and refresh the bootstrap application in the UI. This happens automatically after 3 minutes.
+If you have enabled the webhook earlier, ArgoCD will refresh and trigger install. If you didn't, open ArgoCD and refresh the bootstrap application in the UI. This happens automatically after 3 minutes.
 
-### Login to platform navigator ###
+### Login to platform navigator
 
 See https://www.ibm.com/docs/en/cloud-paks/cp-integration/16.1.0?topic=management-getting-initial-administrator-password
-
-### Create index patterns for OpenShift Logging
-
-Click the Logging menu item in the OpenShift Console. In the Kibana interface, create two index patterns: 'app' and 'infra' that map to '@timestamp'
-
 
 ### (Optional) Enable the LetsEncrypt issuer
 
 In the file [components/platformnavigator/base/kustomization.yaml](components/platformnavigator/base/kustomization.yaml) uncomment the line referring to 'letsencrypt-clusterissuer.yaml'
-
-### Integrate  EEM and APIC 
-
-Please follow this [integration guide](components/apiconnect/apic-eem.md)

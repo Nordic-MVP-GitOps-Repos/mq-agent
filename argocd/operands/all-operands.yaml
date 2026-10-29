@@ -9,45 +9,15 @@ spec:
         - name: platformnavigator
           namespace: cp4i
           sync-wave: "200"
-        # - name: apiconnect
-        #   namespace: cp4i
-        #   sync-wave: "300"
-        # - name: mq
-        #   namespace: cp4i
-        #   sync-wave: "300"
-        # - name: appconnect
-        #   namespace: cp4i
-        #   sync-wave: "300"
-        # - name: eventstreams
-        #   namespace: cp4i
-        #   sync-wave: "300"
-        # - name: eventendpointmgmt
-        #   namespace: cp4i
-        #   sync-wave: "200"
-        #- name: flink
-        #  namespace: cp4i
-        #  sync-wave: "200"
-        #- name: eventprocessing
-        #  namespace: cp4i
-        #  sync-wave: "200"
-        #- name: openshift-monitoring
-        #  namespace: openshift-monitoring
-        #  sync-wave: "200"
-        #- name: openshift-telemetry
-        #  namespace: openshift-tempo-operator
-        #  sync-wave: "200"
-        #- name: reloader
-        #  namespace: cp4i
-        #  sync-wave: "200"
-        #- name: instana-agent
-        #  namespace: instana-agent
-        #  sync-wave: "200"
-        #- name: clusterresourceoverride
-        #  namespace: cp4i
-        #  sync-wave: "200"
-        #- name: assetrepository
-        #  namespace: cp4i
-        #  sync-wave: "200"
+        - name: mq
+          namespace: cp4i
+          sync-wave: "300"
+        - name: openshift-monitoring
+          namespace: openshift-monitoring
+          sync-wave: "200"
+        - name: reloader
+          namespace: cp4i
+          sync-wave: "200"
   template:
     metadata:
       name: '{{name}}'
@@ -58,26 +28,10 @@ spec:
     spec:
       project: cp4i-operands
       source:
-        path: 'envs/odf/nonprod/{{name}}/'
+        path: 'envs/ibm-vpc/nonprod/{{name}}/'
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{namespace}}'
       syncPolicy:
         automated:
           selfHeal: true
-      ignoreDifferences:
-          
-      # App Connect operator adds xxx-adminssl Configuration which is not in our 
-      # manifest. Ignore this so Argo treats the app as synced. We can't add this to the
-      # manifest since a validation webhook checks that the config is available, which it won't be on
-      # first creation of the IntegrationRuntime or if it gets deleted.
-      - group: appconnect.ibm.com
-        kind: IntegrationRuntime
-        jqPathExpressions:
-          - .spec.configurations[] | select(. | endswith("ir-adminssl"))
-
-      # Ignore replicas so HPA can be used.
-      - group: appconnect.ibm.com
-        kind: IntegrationRuntime
-        jsonPointers:
-        - /spec/replicas
