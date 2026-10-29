@@ -10,7 +10,7 @@ license:
   # L-DPTV-SYNAFJ = IBM MQ Advanced NonProduction
   # L-VCNK-GTT2F3 = IBM Cloud Pak for Integration
   # L-HRAV-KRAE8U = IBM Cloud Pak for Integration NonProduction
-  license: L-CXDB-XTZ9J8
+  license: L-DPTV-SYNAFJ
 
 metadata:
   annotations:
