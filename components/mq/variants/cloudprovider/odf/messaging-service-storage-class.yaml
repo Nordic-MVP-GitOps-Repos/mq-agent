@@ -5,4 +5,4 @@ metadata:
 spec:
   queueManager:
     storage:
-      defaultClass: ibmc-vpc-block-10iops-tier
+      defaultClass: ocs-storagecluster-ceph-rbd

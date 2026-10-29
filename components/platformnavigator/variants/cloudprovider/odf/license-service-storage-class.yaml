@@ -4,4 +4,4 @@ metadata:
   name: instance
   namespace: ibm-common-services
 spec:
-  storageClass: ibmc-vpc-block-10iops-tier
+  storageClass: ocs-storagecluster-ceph-rbd

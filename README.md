@@ -1,16 +1,16 @@
 ## Introduction
 
-This repo installs IBM MQ on OpenShift (OpenShift Virtualization on IBM Cloud / VPC infrastructure) using OpenShift GitOps (ArgoCD) and Kustomize. IBM Cloud Pak for Integration Platform Navigator is included for managing MQ. CP4I documentation: https://www.ibm.com/docs/en/cloud-paks/cp-integration
+This repo installs IBM MQ on OpenShift (OpenShift Virtualization on IBM Cloud, using ODF (Ceph RBD) block storage) using OpenShift GitOps (ArgoCD) and Kustomize. IBM Cloud Pak for Integration Platform Navigator is included for managing MQ. CP4I documentation: https://www.ibm.com/docs/en/cloud-paks/cp-integration
 
 ## Repository structure
 
 - `argocd/` - bootstrap ArgoCD application, projects, RBAC and the operator/operand ApplicationSets
-- `components/mq` - MQ operator subscription, queue manager manifests and the IBM VPC / nonprod variants
+- `components/mq` - MQ operator subscription, queue manager manifests and the ODF storage / nonprod variants
 - `components/platformnavigator` - Platform Navigator operator and instance
 - `components/common` - IBM operator catalog source, namespace and operator group
 - `components/openshift-cert-manager`, `components/cert-utils` - certificate tooling used by the queue manager TLS setup
 - `components/reloader`, `components/openshift-monitoring` - Stakater Reloader (restarts queue managers on config/cert change) and user workload monitoring (MQ metrics)
-- `envs/ibm-vpc/nonprod` - the environment that the ApplicationSets deploy
+- `envs/odf/nonprod` - the environment that the ApplicationSets deploy
 - `examples/mq/clients` - sample MQ Java clients
 
 ## Instructions
@@ -19,7 +19,7 @@ You should have an existing OpenShift cluster available.
 
 Make sure that the default storage class is block storage, verify that you have a storage class with the "default" annotation: ```storageclass.kubernetes.io/is-default-class: 'true'```
 
-The MQ storage class is set in [storage-class.yaml](components/mq/variants/cloudprovider/ibm-vpc/storage-class.yaml) (`ibmc-vpc-block-10iops-tier`). Change it if you use a different storage class, for example one backed by OpenShift Virtualization.
+The MQ storage class is set in [storage-class.yaml](components/mq/variants/cloudprovider/odf/storage-class.yaml) (`ocs-storagecluster-ceph-rbd`, the ODF Ceph RBD block class). Change it if your cluster uses a different block storage class.
 
 ### Fork this repo and adapt it for your environment
 
@@ -59,7 +59,7 @@ Create an image pull secret in the 'cp4i' namespace with the name ibm-entitlemen
 
 Now, uncomment the line referring to 'operands/all-operands.yaml' in [kustomization.yaml](./argocd/kustomization.yaml)
 
-The [all-operands.yaml](argocd/operands/all-operands.yaml) ApplicationSet generates ArgoCD applications for Platform Navigator, MQ, OpenShift Monitoring and Stakater Reloader, using [envs/ibm-vpc/nonprod](envs/ibm-vpc/nonprod).
+The [all-operands.yaml](argocd/operands/all-operands.yaml) ApplicationSet generates ArgoCD applications for Platform Navigator, MQ, OpenShift Monitoring and Stakater Reloader, using [envs/odf/nonprod](envs/odf/nonprod).
 
 If you have enabled the webhook earlier, ArgoCD will refresh and trigger install. If you didn't, open ArgoCD and refresh the bootstrap application in the UI. This happens automatically after 3 minutes.
 
