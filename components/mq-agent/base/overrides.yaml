@@ -6,9 +6,11 @@
 
 license:
   accept: true
-  # L-JVBD-R9HX59 = IBM MQ Advanced 9.4
-  # L-SJZL-NMUUCT = IBM Cloud Pak for Integration 16.1.3 (matches QM nonprod license)
-  license: L-SJZL-NMUUCT
+  # L-CXDB-XTZ9J8 = IBM MQ Advanced
+  # L-DPTV-SYNAFJ = IBM MQ Advanced NonProduction
+  # L-VCNK-GTT2F3 = IBM Cloud Pak for Integration
+  # L-HRAV-KRAE8U = IBM Cloud Pak for Integration NonProduction
+  license: L-CXDB-XTZ9J8
 
 metadata:
   annotations:

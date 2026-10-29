@@ -66,6 +66,12 @@ Because the IBM MQ Agent Helm chart takes the watsonx `projectID` and `key` as p
      --namespace cp4i \
      --values components/mq-agent/base/overrides.yaml \
      --values components/mq-agent/base/overrides-secrets.yaml
+
+   > **License options** — change `license.license` in `overrides.yaml` if needed:
+   > - `L-CXDB-XTZ9J8` — IBM MQ Advanced
+   > - `L-DPTV-SYNAFJ` — IBM MQ Advanced NonProduction
+   > - `L-VCNK-GTT2F3` — IBM Cloud Pak for Integration
+   > - `L-HRAV-KRAE8U` — IBM Cloud Pak for Integration NonProduction
    ```
 
    `overrides-secrets.yaml` is git-ignored and never committed.
