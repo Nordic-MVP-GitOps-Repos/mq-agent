@@ -35,7 +35,8 @@ mcpServer:
   # Uncomment if your QM channel requires username/password authentication:
   # configurationSecretName: mq-agent-credentials
 
-imagePullSecrets: ibm-entitlement-key
+imagePullSecrets:
+  - name: ibm-entitlement-key
 
 route:
   enabled: true
