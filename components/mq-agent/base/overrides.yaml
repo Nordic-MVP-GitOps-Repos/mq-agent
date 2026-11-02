@@ -25,8 +25,15 @@ agent:
   model:
     providers:
       myWatsonxRuntime:
+        uri: https://eu-gb.ml.cloud.ibm.com
         watsonxService:
           # projectID and key are supplied via overrides-secrets.yaml — never committed to git
+    roles:
+      primaryLLM:
+        modelId: "meta-llama/llama-3-3-70b-instruct"
+      secondaryLLM:
+        enabled: true
+        modelId: "mistralai/mistral-small-3-1-24b-instruct-2503"
 
 mcpServer:
   ccdtConfigMapName: mq-agent-ccdt
