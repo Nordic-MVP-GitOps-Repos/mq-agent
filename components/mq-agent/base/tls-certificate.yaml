@@ -25,5 +25,6 @@ spec:
   dnsNames:
     - '*.cp4i.svc'
     - '*.cp4i.svc.cluster.local'
+    - 'ibm-mq-agent-ibm-mq-agent-cp4i.apps.itz-oxpgsv.infra01-lb.lon04.techzone.ibm.com'
   issuerRef:
     name: mq-selfsigned-issuer

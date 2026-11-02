@@ -41,7 +41,7 @@ spec:
     # Helm chart from the IBM Helm registry
     - repoURL: https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm
       chart: ibm-mq-agent
-      targetRevision: 3.1.0
+      targetRevision: 1.0.1
       helm:
         valueFiles:
           # Non-secret overrides stored in git
