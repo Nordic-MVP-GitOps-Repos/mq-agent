@@ -6,10 +6,12 @@
 
 license:
   accept: true
-  # Valid licenses for agent chart 1.x (MQ 9.4.x):
-  # L-JVBD-R9HX59 = IBM MQ Advanced
-  # L-SJZL-NMUUCT = IBM Cloud Pak for Integration (production or nonprod)
-  license: L-SJZL-NMUUCT
+  # Valid licenses for agent chart 2.x:
+  # L-CXDB-XTZ9J8 = IBM MQ Advanced
+  # L-DPTV-SYNAFJ = IBM MQ Advanced NonProduction
+  # L-VCNK-GTT2F3 = IBM Cloud Pak for Integration
+  # L-HRAV-KRAE8U = IBM Cloud Pak for Integration NonProduction
+  license: L-DPTV-SYNAFJ
 
 metadata:
   annotations:
