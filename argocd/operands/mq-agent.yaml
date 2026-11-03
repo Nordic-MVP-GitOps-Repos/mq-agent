@@ -29,7 +29,8 @@ metadata:
   name: mq-agent
   namespace: openshift-gitops
   labels:
-    group: applications
+    # Not "applications": the kustomize repoURL patch targets spec.source, which this multi-source app lacks.
+    group: applications-multisource
   annotations:
     argocd.argoproj.io/sync-wave: "400"
 spec:
