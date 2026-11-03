@@ -78,9 +78,9 @@ Because the IBM MQ Agent Helm chart takes the watsonx `projectID` and `key` as p
 
 ### ArgoCD
 
-The CCDT ConfigMap (`mq-agent-config`, sync-wave 350) is managed by ArgoCD from this directory.
+The CCDT ConfigMap and TLS certificate (`mq-agent-config`, sync-wave 350) are managed by ArgoCD from this directory, declared in [`argocd/operands/mq-agent.yaml`](../../../argocd/operands/mq-agent.yaml).
 
-The Helm chart (`mq-agent`, sync-wave 400) is also declared as an ArgoCD Application in [`argocd/operands/mq-agent.yaml`](../../../argocd/operands/mq-agent.yaml) using ArgoCD's multi-source support. ArgoCD handles the non-sensitive `overrides.yaml`; the secrets values must be injected at initial `helm install` time as described above. On subsequent upgrades use `helm upgrade` with both values files.
+The Helm chart is **not** managed by ArgoCD, because it needs the watsonx secrets that are never stored in git. Install it with `helm install` as described above, and use `helm upgrade` with both values files for subsequent changes.
 
 ### Queue manager access
 
