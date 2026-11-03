@@ -88,6 +88,12 @@ spec:
           items:
             - tls.crt
             - ca.crt
+      - name: agenttrust
+        secret:
+          secretName: mq-agent-tls
+          items:
+            - tls.crt
+            - ca.crt
   web:
     enabled: true
     manualConfig:
